@@ -1,6 +1,8 @@
 import { Button, Col, message, Row } from 'antd'
+import Avatar from 'antd/lib/avatar/avatar'
 import React, { useEffect, useRef, useState } from 'react'
 import "./App.less"
+import CreatePost from './components/CreatePost'
 import Post from "./components/Post"
 import SignIn from './components/SignIn'
 import SignUp from './components/SignUp'
@@ -8,8 +10,9 @@ import { db, auth } from './configs/firebase'
 
 const App = () => {
   const [posts, setPosts] = useState([])
-  const signUp = useRef()
-  const signIn = useRef()
+  const signUpRef = useRef()
+  const signInRef = useRef()
+  const createPostRef = useRef()
   const [user, setUser] = useState(null)
 
   useEffect(() => {
@@ -36,10 +39,11 @@ const App = () => {
   return (
     <div className="">
       <div className="app-header">
-        <SignUp ref={signUp} />
-        <SignIn ref={signIn} />
+        <SignUp ref={signUpRef} />
+        <SignIn ref={signInRef} />
+        <CreatePost ref={createPostRef} />
         <Row>
-          <Col span={18}>
+          <Col span={8}>
             <img
               className="app-header-image"
               src="https://www.instagram.com/static/images/web/mobile_nav_type_logo-2x.png/1b47f9d0e595.png"
@@ -47,27 +51,46 @@ const App = () => {
               height={32}
             />
           </Col>
-          <Col span={6}>
-            <Row justify="end">
+          <Col span={16}>
+            <Row justify="end" align="middle">
               {user
-                ? <Button onClick={logout}>Logout</Button>
+                ? (
+                  <React.Fragment>
+                    {user
+                      ? user.displayName
+                        ? <span style={{ marginRight: "2rem" }} >{user.displayName}</span>
+                        : <span style={{ marginRight: "2rem" }} >{user.email}</span>
+                      : <span style={{ marginRight: "2rem" }} >guest</span>
+                    }
+                    <Button shape="round" onClick={logout}>Logout</Button>
+                  </React.Fragment>
+                )
                 : (
                   <React.Fragment>
-                    <Button onClick={() => signUp.current.showModal()}>SiginUp</Button>
-                    <Button style={{ marginLeft: "1rem" }} onClick={() => signIn.current.showModal()}>SiginIn</Button>
+                    <Button shape="round" onClick={() => signUpRef.current.showModal()}>SiginUp</Button>
+                    <Button shape="round" style={{ marginLeft: "1rem" }} onClick={() => signInRef.current.showModal()}>SiginIn</Button>
                   </React.Fragment>
                 )
               }
-
             </Row>
           </Col>
         </Row>
       </div>
-      {
-        posts.map(post => <Post key={post.id} username={post.username} caption={post.caption} imageUrl={post.imageUrl} />)
+      {user &&
+        <div className="create-post">
+          <Avatar style={{ marginRight: "1rem", marginLeft: "0.7rem" }}>Username</Avatar>
+          <Button
+            style={{ paddingRight: "235px" }}
+            shape="round"
+            onClick={() => createPostRef.current.showModal(user)}>
+            What's on your mind ?
+          </Button>
+        </div>
       }
 
-    </div>
+      { posts.map(post => <Post key={post.id} username={post.username} caption={post.caption} imageUrl={post.imageUrl} />)}
+
+    </div >
   )
 }
 

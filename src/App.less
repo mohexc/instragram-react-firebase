@@ -10,3 +10,30 @@
   border-bottom: 1px solid lightgray;
   margin-bottom: 1rem;
 }
+
+.create-post {
+  display: flex;
+  // justify-content: space-between;
+  align-items: center;
+  border: 1px solid lightgray;
+  border-radius: 10px;
+  padding: 0.5rem;
+  width: 480px;
+  margin: 1rem;
+}
+
+.btn-create-post {
+  cursor: pointer;
+  border: 1px solid lightgray;
+  border-radius: 10px;
+  padding: 0.5rem;
+  width: 85%;
+  &:hover {
+    background-color: lightblue;
+    transform: translateY(-5px);
+  }
+  &:active {
+    transform: translateY(0px);
+    background-color: lightblue;
+  }
+}
