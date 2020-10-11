@@ -20,7 +20,7 @@ const Post = ({ username, caption, imageUrl }) => {
             <h4 className="post-text">
                 <strong>{username}</strong> : {caption}
             </h4>
-            {/* username + caption */}
+
         </div>
     )
 }
