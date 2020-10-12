@@ -12,6 +12,7 @@
   object-fit: contain;
   border-top: 1px solid lightgray;
   border-bottom: 1px solid lightgray;
+  margin-bottom: 1rem;
 }
 
 .post-text {
@@ -27,4 +28,40 @@
 
 .post-avatar {
   margin-right: 20px;
+}
+
+.post-comment-box {
+  display: flex;
+  margin-top: 1rem;
+  padding: 2px;
+}
+
+.post-input {
+  flex: 1;
+  border: none;
+  padding: 10px;
+  border-top: 1px solid lightgray;
+}
+
+.post-btn {
+  flex: 0;
+  color: gray;
+  background-color: white;
+  border-left: none;
+  border-bottom: none;
+  border-right: none;
+  border-top: 1px solid lightgray;
+}
+.post-btn-active {
+  flex: 0;
+  background-color: white;
+  color: skyblue;
+  border-left: none;
+  border-bottom: none;
+  border-right: none;
+  border-top: 1px solid lightgray;
+  &:active {
+    box-shadow: 0px 0px 5px 5px rgba(135, 206, 235, 0.3);
+    z-index: 10px;
+  }
 }

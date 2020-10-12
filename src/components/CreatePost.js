@@ -1,30 +1,85 @@
-import { message, Modal, Row } from 'antd'
+import { message, Modal } from 'antd'
 import React, { useImperativeHandle, useState } from 'react'
 import { Form, Input, Button, } from 'antd';
-import { auth } from '../configs/firebase';
+import { storage, db, timestamp } from '../configs/firebase';
 import './CreatePost.less'
 import getBase64 from '../utils/getBase64'
 
 
-const CreatePost = (props, ref) => {
+const CreatePost = ({ user }, ref) => {
     const [visible, setVisible] = useState(false)
     const [submitButton, setSubmitButton] = useState(false)
     const [file, setFile] = useState(null)
     const [previewImage, setPreviewImage] = useState()
     const [error, setError] = useState(null)
-    const [user, setUser] = useState()
 
+    const [progress, setProgress] = useState()
     useImperativeHandle(ref, () => {
         return {
             showModal: (data) => {
                 setVisible(true)
-                setUser(data)
+
             }
         }
     })
 
-    const onFinish = async (values) => {
+
+    const onFinish = (values) => {
         setSubmitButton(true)
+        if (file) {
+            const storageRef = storage.ref(file.name)
+            storageRef.put(file).on(
+                "state_changed",
+                (snap) => {
+                    let percenttage = (snap.bytesTransferred / snap.totalBytes) * 100
+                    setProgress(percenttage)
+                },
+                (err) => {
+                    message.error(err.message)
+                    setSubmitButton(false)
+                },
+                () => {
+                    storageRef.getDownloadURL().then((url) => {
+                        db.collection("posts")
+                            .add({
+                                timestamp: timestamp(),
+                                caption: values.caption,
+                                username: user.displayName ? user.displayName : user.email,
+                                imageUrl: url
+                            })
+                            .then(res => {
+                                console.log(res)
+                                setSubmitButton(false)
+                                setVisible(false)
+                                setPreviewImage()
+                                setFile()
+                            })
+                            .catch(e => message.error(e.message))
+
+                    })
+                })
+            return
+        }
+        if (values.caption && !file) {
+            db.collection("posts")
+                .add({
+                    timestamp: timestamp(),
+                    caption: values.caption,
+                    username: user.displayName ? user.displayName : user.email,
+                    imageUrl: null
+                })
+                .then(res => {
+                    console.log(res)
+                    setSubmitButton(false)
+                    setVisible(false)
+                    setPreviewImage()
+                    setFile()
+                })
+                .catch(e => message.error(e.message))
+            return
+        }
+
+
     };
 
     const onFinishFailed = (errorInfo) => {
@@ -65,13 +120,13 @@ const CreatePost = (props, ref) => {
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}
             >
-                <Form.Item name="caption" rules={[{ required: true, message: 'Please input your password!', },]}>
+                <Form.Item name="caption" rules={[{ required: true, message: 'Please input your Caption!', },]}>
                     <Input.TextArea placeholder={`What's on your mind, ${user && user.displayName}`} rows={7} />
                 </Form.Item>
                 {previewImage && <img src={previewImage} alt="previewImage" height="100px" />}
                 {error && <div style={{ color: "red" }}>{error}</div>}
                 {file && <div>{file.name}</div>}
-                <label>
+                <label className="label-input-image">
                     <span style={{ display: "flex", justifyContent: "center", alignItems: "center", height: '100%' }}>
                         <input type="file" onChange={handleFile}></input>
                         <span>upload</span>

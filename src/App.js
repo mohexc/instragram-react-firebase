@@ -24,6 +24,7 @@ const App = () => {
   useEffect(() => {
     db
       .collection('posts')
+      .orderBy('timestamp', 'desc')
       .onSnapshot(snapshots => setPosts(snapshots.docs.map(doc => (
         { ...doc.data(), id: doc.id }
       ))))
@@ -41,7 +42,7 @@ const App = () => {
       <div className="app-header">
         <SignUp ref={signUpRef} />
         <SignIn ref={signInRef} />
-        <CreatePost ref={createPostRef} />
+        <CreatePost user={user} ref={createPostRef} />
         <Row>
           <Col span={8}>
             <img
@@ -76,9 +77,9 @@ const App = () => {
           </Col>
         </Row>
       </div>
-      {user &&
-        <div className="create-post">
-          <Avatar style={{ marginRight: "1rem", marginLeft: "0.7rem" }}>Username</Avatar>
+      {user
+        ? <div className="create-post">
+          <Avatar style={{ marginRight: "1rem", marginLeft: "0.7rem" }}>{user.displayName ? user.displayName : "User"} </Avatar>
           <Button
             style={{ paddingRight: "235px" }}
             shape="round"
@@ -86,9 +87,18 @@ const App = () => {
             What's on your mind ?
           </Button>
         </div>
-      }
 
-      { posts.map(post => <Post key={post.id} username={post.username} caption={post.caption} imageUrl={post.imageUrl} />)}
+        : <div style={{ marginTop: '5rem' }}></div>}
+      { posts.map((post) => {
+        return <Post
+          key={post.id}
+          user={user}
+          username={post.username}
+          caption={post.caption}
+          imageUrl={post.imageUrl}
+          postId={post.id}
+        />
+      })}
 
     </div >
   )

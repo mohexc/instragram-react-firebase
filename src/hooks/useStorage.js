@@ -7,7 +7,7 @@ const useStorage = (file) => {
     const [url, setUrl] = useState(null)
     useEffect(() => {
         const storageRef = storage.ref(file.name)
-        const collectionRef = db.collection("images")
+        // const collectionRef = db.collection("images")
 
         storageRef.put(file).on(
             "state_changed",
@@ -20,8 +20,8 @@ const useStorage = (file) => {
             },
             async () => {
                 const url = await storageRef.getDownloadURL()
-                const createdAt = timestamp()
-                await collectionRef.add({ url, createdAt })
+                // const createdAt = timestamp()
+                // await collectionRef.add({ url, createdAt })
                 setUrl(url)
             }
         )
