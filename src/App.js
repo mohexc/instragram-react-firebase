@@ -77,29 +77,33 @@ const App = () => {
           </Col>
         </Row>
       </div>
-      {user
-        ? <div className="create-post">
-          <Avatar style={{ marginRight: "1rem", marginLeft: "0.7rem" }}>{user.displayName ? user.displayName : "User"} </Avatar>
-          <Button
-            style={{ paddingRight: "235px" }}
-            shape="round"
-            onClick={() => createPostRef.current.showModal(user)}>
-            What's on your mind ?
-          </Button>
-        </div>
+      <Row justify="center">
+        <Col xs={23} md={23} lg={16}>
+          {user
+            ? <div className="create-post">
+              <Avatar style={{ marginRight: "1rem", marginLeft: "0.7rem" }}>{user.displayName ? user.displayName : "User"} </Avatar>
+              <Button
+                style={{ width: "100%" }}
+                shape="round"
+                onClick={() => createPostRef.current.showModal(user)}>
+                What's on your mind ?
+              </Button>
+            </div>
 
-        : <div style={{ marginTop: '5rem' }}></div>}
-      { posts.map((post) => {
-        return <Post
-          key={post.id}
-          user={user}
-          username={post.username}
-          caption={post.caption}
-          imageUrl={post.imageUrl}
-          postId={post.id}
-        />
-      })}
+            : <div style={{ marginTop: '5rem' }}></div>}
+          {posts.map((post) => {
+            return <Post
+              key={post.id}
+              user={user}
+              username={post.username}
+              caption={post.caption}
+              imageUrl={post.imageUrl}
+              postId={post.id}
+            />
+          })}
+        </Col>
 
+      </Row>
     </div >
   )
 }
